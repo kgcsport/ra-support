@@ -1,4 +1,4 @@
-# Vassar Hopper + Dropbox Setup Guide
+# Vassar Hopper + Dropbox Setup Guide 
 
 This guide explains how to:
 
