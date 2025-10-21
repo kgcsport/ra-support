@@ -378,6 +378,7 @@ ssh -T git@github.com
 | Dropbox linked successfully | ☐ |
 | Tested sync script | ☐ |
 | Opened a compute session and run code | ☐ |
+| Set git credentials | ☐ |
 
 ---
 
