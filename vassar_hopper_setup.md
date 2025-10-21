@@ -91,7 +91,7 @@ ln -s /work/$USER/.vscode-server ~/.vscode-server
 
 Various bits of software (`stata`, `anaconda`) are available via `module` commands. However, when accessing via `remote-ssh`, you'll need to add some things to your `~/.bashrc` file to make them available.
 
-Accessible the `~/.bashrc` file by running: `code ~/.bashrc` in your terminal. Then add:
+Access the `~/.bashrc` file by running: `code ~/.bashrc` in your terminal. Then add:
 
 ```bash
 # Set up environment modules
@@ -100,7 +100,7 @@ if [ -f /etc/profile.d/modules.sh ]; then
 fi
 ```
 
-to the top of the file. Then save and close the file.
+to the end of the file. Then save and close the file.
 
 ---
 
