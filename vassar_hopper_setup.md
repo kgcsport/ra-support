@@ -55,8 +55,6 @@ Host hopper
   HostName jr.vassar.edu
   User <vassar-username>
   Port 22
-  ForwardAgent no
-  ServerAliveInterval 30
 ```
 
 ### Step 3: Connect in VS Code
@@ -88,7 +86,25 @@ ln -s /work/$USER/.vscode-server ~/.vscode-server
 
 ---
 
-## 5. Transfer Files (Manual)
+---
+# 5. Module Management
+
+Various bits of software (`stata`, `anaconda`) are available via `module` commands. However, when accessing via `remote-ssh`, you'll need to add some things to your `~/.bashrc` file to make them available.
+
+Accessible the `~/.bashrc` file by running: `code ~/.bashrc` in your terminal. Then add:
+
+```bash
+# Set up environment modules
+if [ -f /etc/profile.d/modules.sh ]; then
+    . /etc/profile.d/modules.sh
+fi
+```
+
+to the top of the file. Then save and close the file.
+
+---
+
+## 6. Transfer Files (Manual)
 
 Use `scp` to move files between your computer and Hopper:
 
@@ -100,11 +116,14 @@ scp myfile.txt <user>@jr.vassar.edu:/work/<user>/
 scp <user>@jr.vassar.edu:/work/<user>/results.csv .
 ```
 
-You can also drag-and-drop files using VS Code’s Remote Explorer.
+You can also drag-and-drop files using VS Code’s Remote Explorer. Or WinSCP.
+
 
 ---
 
-## 6. Install rclone on Hopper (for Dropbox)
+## 7. Install rclone on Hopper (for Dropbox)
+
+_Note: You can likely just do `module load rclone` aand do not need to download the `rclone`age. This is here for backwards compatibility._
 
 Run these commands **on Hopper**:
 
@@ -122,7 +141,7 @@ rclone version
 
 ---
 
-## 7. Install rclone on Your PC (for Dropbox Authorization)
+## 8. Install rclone on Your PC (for Dropbox Authorization)
 
 Because Hopper has no browser, you must authorize Dropbox from your own computer.
 
@@ -142,7 +161,7 @@ rclone version
 
 ---
 
-## 8. Link Dropbox to Hopper (Headless Setup)
+## 9. Link Dropbox to Hopper (Headless Setup)
 
 ### On Hopper
 
@@ -186,7 +205,7 @@ Once completed, Dropbox is linked on Hopper.
 
 ---
 
-## 9. Sync Dropbox and Hopper with a Script
+## 10. Sync Dropbox and Hopper with a Script
 
 Create a folder for personal scripts:
 
@@ -194,71 +213,13 @@ Create a folder for personal scripts:
 mkdir -p ~/bin
 ```
 
-Then create a file named `sync_dropbox.sh` inside `~/bin`:
+Then copy the file named [bin/sync_dropbox.sh](bin/sync_dropbox.sh) inside this repository to your own `~/bin` folder. Or create a new file called `sync_dropbox.sh` in your `~/bin` folder:
 
 ```bash
 nano ~/bin/sync_dropbox.sh
 ```
 
-Paste the following script:
-
-```bash
-#!/usr/bin/env bash
-#
-# sync_dropbox.sh
-# Sync a Dropbox folder with Hopper using rclone.
-# Usage:
-#   ./sync_dropbox.sh <folder_name> [direction]
-#
-# folder_name : Dropbox folder under /Projects/
-# direction   : "pull" (default) = Dropbox → Hopper
-#               "push"            = Hopper → Dropbox
-#
-# Example:
-#   ./sync_dropbox.sh MyStudy
-#   ./sync_dropbox.sh MyStudy push
-
-set -euo pipefail
-
-REMOTE_NAME="dropbox"
-DROPBOX_BASE="/Projects"
-LOCAL_BASE="/work/$USER"
-LOG_FILE="$LOCAL_BASE/rclone_sync.log"
-
-FOLDER_NAME=${1:-}
-DIRECTION=${2:-pull}
-
-if [[ -z "$FOLDER_NAME" ]]; then
-  echo "❌ Usage: $0 <folder_name> [pull|push]"
-  exit 1
-fi
-
-REMOTE_PATH="${REMOTE_NAME}:${DROPBOX_BASE}/${FOLDER_NAME}"
-LOCAL_PATH="${LOCAL_BASE}/${FOLDER_NAME}"
-
-mkdir -p "$LOCAL_PATH"
-
-echo "--------------------------------------------------------"
-echo "📂 Dropbox folder: ${REMOTE_PATH}"
-echo "📁 Local folder:   ${LOCAL_PATH}"
-echo "🔁 Direction:      ${DIRECTION}"
-echo "🕒 Started:        $(date)"
-echo "--------------------------------------------------------" | tee -a "$LOG_FILE"
-
-if [[ "$DIRECTION" == "pull" ]]; then
-  echo "⬇️  Syncing Dropbox → Hopper..."
-  rclone sync "${REMOTE_PATH}" "${LOCAL_PATH}" -P --create-empty-src-dirs | tee -a "$LOG_FILE"
-elif [[ "$DIRECTION" == "push" ]]; then
-  echo "⬆️  Syncing Hopper → Dropbox..."
-  rclone sync "${LOCAL_PATH}" "${REMOTE_PATH}" -P --create-empty-src-dirs | tee -a "$LOG_FILE"
-else
-  echo "❌ Direction must be 'pull' or 'push'."
-  exit 1
-fi
-
-echo "✅ Done! Finished at $(date)" | tee -a "$LOG_FILE"
-echo "--------------------------------------------------------"
-```
+and paste in the content from this repository's [bin/sync_dropbox.sh](bin/sync_dropbox.sh) into your local `~/bin/sync_dropbox.sh` file.
 
 Save and close the file (`Ctrl+O`, `Enter`, `Ctrl+X`).
 
@@ -274,10 +235,10 @@ source ~/.bashrc
 
 ```bash
 # Pull Dropbox → Hopper
-sync_dropbox.sh MyStudy
+sync_dropbox.sh MyProject
 
 # Push Hopper → Dropbox
-sync_dropbox.sh MyStudy push
+sync_dropbox.sh MyProject push
 ```
 
 ---
@@ -291,7 +252,7 @@ sync_dropbox.sh MyStudy push
 ### To Preview Changes Before Running:
 
 ```bash
-rclone sync dropbox:/Projects/MyStudy /work/$USER/MyStudy -n
+rclone sync dropbox:/Projects/MyProject /work/$USER/MyProject -n
 ```
 
 ### Optional: Set Up Automatic Periodic Sync
@@ -305,7 +266,7 @@ crontab -e
 Add this line:
 
 ```
-0 */6 * * * /home/$USER/bin/sync_dropbox.sh MyStudy >> /work/$USER/rclone_sync.log 2>&1
+0 */6 * * * /home/$USER/bin/sync_dropbox.sh MyProject >> /work/$USER/rclone_sync.log 2>&1
 ```
 
 ---
@@ -321,6 +282,25 @@ srun -p general -t 1:00:00 --pty bash
 
 Then run your code inside that session.
 
+
+---
+# 12. Set git credentials
+
+`git` is already installed to use from the command line and with the version control in `VScode`. You just need to get things setup to interface with your github account:
+
+### Introduce yourself
+
+```bash
+git config --global user.name "Your Name"
+git config -- global user.email "your.email@vassar.edu"
+```
+
+### Keep branch names consistent
+
+```bash
+git config --global init.defaultBranch main
+```
+
 ---
 
 ## 12. Quick Checklist
@@ -335,7 +315,7 @@ Then run your code inside that session.
 | Installed rclone on PC | ☐ |
 | Dropbox linked successfully | ☐ |
 | Tested sync script | ☐ |
-| Ran a Slurm job | ☐ |
+| Opened a compute session and run code | ☐ |
 
 ---
 
