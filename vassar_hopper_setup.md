@@ -1,4 +1,4 @@
-# Vassar Hopper + Dropbox Setup Guide 
+# Vassar Hopper + Dropbox Setup Guide
 
 This guide explains how to:
 
@@ -301,6 +301,68 @@ git config -- global user.email "your.email@vassar.edu"
 git config --global init.defaultBranch main
 ```
 
+### Authenticate your GitHub account
+
+There are two options to do this:
+
+1. Use a `Personal Access Token` (simpler)
+2. Use a `SSH Key` (more secure, but requires more setup)
+
+#### Using a `Personal Access Token`
+
+1. Go to [https://github.com/settings/tokens](https://github.com/settings/tokens)
+2. Click on `New Token`
+3. Give it a name, e.g. `VSCode`
+4. Select the `repo` scope
+5. Click on `Generate Token`
+6. Copy the token
+7. Paste the token into the Hopper terminal when prompted.
+8. Test the connection:
+
+```bash
+ssh -T git@github.com
+```
+   If you see a message like `Hi <your-username>! You've successfully authenticated, but GitHub does not provide shell access.`, you're good to go.
+
+
+#### Using a `SSH Key`
+
+1. Generate a new SSH key:
+   ```bash
+   ssh-keygen -t ed25519 -C "your.email@vassar.edu"
+   ```
+   Note: Only create a passphrase if you want to add an additional layer of security. Otherwise, just press Enter twice.
+
+2. You now have a private key (`~/.ssh/id_ed25519`) and a public key (`~/.ssh/id_ed25519.pub`). Open the `~/.ssh/id_ed25519.pub` file and copy the contents.
+3. Log into your GitHub account and go to [https://github.com/settings/ssh/new](https://github.com/settings/ssh/new)
+4. Paste the contents of the `~/.ssh/id_ed25519.pub` file into the `Key` field. Name the `key` something you'll be able to distinguish from other keys.
+5. Click on `Add SSH Key`.
+6. Copy the SSH key to your Hopper terminal:
+   ```bash
+      ssh-add ~/.ssh/id_ed25519
+      ```
+7. Test the connection:
+   ```bash
+   ssh -T git@github.com
+   ```
+   If you see a message like `Hi <your-username>! You've successfully authenticated, but GitHub does not provide shell access.`, you're good to go.
+
+   _Note: You may get a message like:_
+
+   ```bash
+   The authenticity of host 'github.com (140.82.112.3)' can't be established.
+   ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
+   This key is not known by any other names
+   Are you sure you want to continue connecting (yes/no/[fingerprint])?
+   ```
+   Type `yes` and press Enter. You'll then receive this prompt:
+
+   ```bash
+   Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
+   Hi <your-username>! You've successfully authenticated, but GitHub does not provide shell access.
+   ```
+
+   If you do not get to this message, something went wrong. Work through the setup again and see me if you can't square it.
 ---
 
 ## 12. Quick Checklist
