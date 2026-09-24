@@ -54,24 +54,23 @@ If you’re unsure what a task means, ask or give it your best shot and flag unc
 
 ---
 
-## 📁 Setup & Tools
+### Setup and tools
 
-We use **GitHub for code**, **Dropbox for data**.
+We use **Dropbox for research data and GitHub for code, documentation, and project tasks**. You do not need to know Git before starting.
 
-Please complete the following in your first week:
+**During your first week:**
 
-1. Make a **GitHub account** and send me your username  
-2. Accept repo invite within a week  
-3. Make an **initial commit**  
-4. Make a **branch**, change a file, and **open a pull request**  
-5. Store **data in Dropbox**, and **code in GitHub**  
-6. Set your **Dropbox path as an environment variable**
-   - In R: `Sys.getenv("DROPBOX_DIR")`
-   - In Python: `os.environ["DROPBOX_DIR"]`
-7. Run the test script in the repo to confirm setup.  
-   If something breaks, tell me—we’ll fix it together.
-8. Sign up for **[GitHub Education](https://education.github.com/students)** to get access to GitHub Copilot for free.  
-   If you’re not eligible or it doesn’t work, I can provide access to ChatGPT Plus and/or Claude Pro as needed.
+1. Read this handbook and create a free GitHub account and Dropbox account.
+2. Send me your GitHub username and Dropbox email so I can grant access.
+3. Open your assigned project files and confirm you can access the data you need.
+4. Find your assigned task on GitHub. You can use the website; no command-line setup is necessary.
+5. Complete a small first deliverable and record anything confusing or unexpected.
+
+**If your assignment involves programming**, we'll also set up the repository, Dropbox environment variable, and test script. I'll help you make your first commit and pull request.
+
+You can use AI tools to help learn programming and troubleshoot. Eligible students can apply for GitHub Education benefits, which may include Copilot access. You do not need a paid AI subscription to participate in this research.
+
+Please keep research data in the approved Dropbox folders, not GitHub or personal AI tools. Never upload restricted data, credentials, or private information to a public repository or an unapproved AI service.
 
 ---
 
